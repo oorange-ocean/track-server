@@ -6,7 +6,7 @@ import { Redis } from 'ioredis';
 export class EventService {
   constructor(
     @Inject('REDIS_CLIENT')
-    private readonly redisClient: Redis
+    private readonly redisClient: Redis | null
   ) {}
 
   async trackEvent(eventData: any) {
@@ -15,9 +15,11 @@ export class EventService {
       const event = new Event(eventData);
       await event.save();
 
-      // 保存到 Redis 用于实时统计
-      const redisKey = `events:${eventData.projectId}:${eventData.eventName}`;
-      await this.redisClient.incr(redisKey);
+      // 如果 Redis 可用，则保存到 Redis
+      if (this.redisClient) {
+        const redisKey = `events:${eventData.projectId}:${eventData.eventName}`;
+        await this.redisClient.incr(redisKey);
+      }
       
       return { success: true, message: '事件追踪成功' };
     } catch (error) {
