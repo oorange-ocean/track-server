@@ -4,10 +4,19 @@ import { EventService } from './services/event.service';
 import { connectMongoDB, connectRedis } from './config/db.config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { MongooseModule } from '@nestjs/mongoose';
+import { ReportController } from './controllers/report.controller';
+import { ReportService } from './services/report.service';
+import { Report, ReportSchema } from './schemas/report.schema';
 
 @Module({
-  imports: [],
-  controllers: [EventController, AppController],
+  imports: [
+    MongooseModule.forRoot(process.env.MONGODB_URI),
+    MongooseModule.forFeature([
+      { name: Report.name, schema: ReportSchema },
+    ]),
+  ],
+  controllers: [EventController, AppController, ReportController],
   providers: [
     {
       provide: 'REDIS_CLIENT',
@@ -21,7 +30,8 @@ import { AppService } from './app.service';
       }
     },
     EventService,
-    AppService
+    AppService,
+    ReportService
   ],
 })
 export class AppModule {

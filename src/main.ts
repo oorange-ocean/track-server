@@ -16,11 +16,7 @@ async function bootstrap() {
     }
     next();
   });
-  
-  // 配置全局前缀（仅对 /api 开头的路由生效）
-  app.setGlobalPrefix('api', {
-    exclude: ['/'],
-  });
+
   
   // 配置 CORS
   app.enableCors({
