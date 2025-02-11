@@ -13,7 +13,12 @@ export class ReportController {
 
   @Post()
   async handleReport(@Body() data: any) {
-    this.logger.log(`收到上报数据: ${data.type}`);
+    // 如果前端传来的是毫秒时间戳，需要转换为秒
+    if (data.time && data.time > 1e10) {
+      data.time = Math.floor(data.time / 1000);
+    }
+    
+    this.logger.log(`收到上报数据`, data);
 
     switch (data.type) {
       case 'error':

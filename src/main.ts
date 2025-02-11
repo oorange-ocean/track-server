@@ -30,6 +30,9 @@ async function bootstrap() {
     whitelist: true,
     transform: true,
     forbidNonWhitelisted: true,
+    transformOptions: {
+      enableImplicitConversion: true,
+    },
   }));
   
   // 配置 Helmet（安全相关的 HTTP 头）

@@ -8,6 +8,8 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ReportController } from './controllers/report.controller';
 import { ReportService } from './services/report.service';
 import { Report, ReportSchema } from './schemas/report.schema';
+import { ErrorMonitorController } from './controllers/error-monitor.controller';
+import { ErrorMonitorService } from './services/error-monitor.service';
 
 @Module({
   imports: [
@@ -16,7 +18,7 @@ import { Report, ReportSchema } from './schemas/report.schema';
       { name: Report.name, schema: ReportSchema },
     ]),
   ],
-  controllers: [EventController, AppController, ReportController],
+  controllers: [EventController, AppController, ReportController, ErrorMonitorController],
   providers: [
     {
       provide: 'REDIS_CLIENT',
@@ -31,7 +33,8 @@ import { Report, ReportSchema } from './schemas/report.schema';
     },
     EventService,
     AppService,
-    ReportService
+    ReportService,
+    ErrorMonitorService,
   ],
 })
 export class AppModule {
