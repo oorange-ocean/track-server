@@ -8,6 +8,7 @@ import {
   LongTasksQueryDto,
   MemoryQueryDto,
   FspQueryDto,
+  WhiteScreenQueryDto,
 } from '../dtos/performance-query.dto';
 
 @Injectable()
@@ -209,6 +210,44 @@ export class PerformanceMonitorService {
       return {
         code: 500,
         message: '获取首屏加载数据失败',
+      };
+    }
+  }
+
+  async getWhiteScreenData(query: WhiteScreenQueryDto) {
+    const { startTime, endTime, apikey, status, page = 1, pageSize = 20 } = query;
+    
+    const filter: any = {
+      apikey,
+      type: 'whiteScreen',
+      time: { $gte: startTime, $lte: endTime },
+    };
+
+    if (status) {
+      filter.status = status;
+    }
+
+    try {
+      const skip = (page - 1) * pageSize;
+      const [total, list] = await Promise.all([
+        this.reportModel.countDocuments(filter),
+        this.reportModel
+          .find(filter)
+          .sort({ time: -1 })
+          .skip(skip)
+          .limit(pageSize)
+          .exec(),
+      ]);
+
+      return {
+        code: 0,
+        data: { total, list },
+      };
+    } catch (error) {
+      this.logger.error('获取白屏检测数据失败', error);
+      return {
+        code: 500,
+        message: '获取白屏检测数据失败',
       };
     }
   }

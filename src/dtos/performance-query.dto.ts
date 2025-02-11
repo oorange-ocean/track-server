@@ -54,4 +54,10 @@ export class FspQueryDto extends BasePerformanceQueryDto {
   @IsOptional()
   @IsString()
   rating?: string;
+}
+
+export class WhiteScreenQueryDto extends BasePerformanceQueryDto {
+  @IsOptional()
+  @IsString()
+  status?: 'error' | 'ok';
 } 

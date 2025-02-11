@@ -6,6 +6,7 @@ import {
   LongTasksQueryDto,
   MemoryQueryDto,
   FspQueryDto,
+  WhiteScreenQueryDto,
 } from '../dtos/performance-query.dto';
 
 @Controller('api/performance')
@@ -37,5 +38,10 @@ export class PerformanceMonitorController {
   @Get('fsp')
   async getFspData(@Query() query: FspQueryDto) {
     return await this.performanceMonitorService.getFspData(query);
+  }
+
+  @Get('white-screen')
+  async getWhiteScreenData(@Query() query: WhiteScreenQueryDto) {
+    return await this.performanceMonitorService.getWhiteScreenData(query);
   }
 } 
