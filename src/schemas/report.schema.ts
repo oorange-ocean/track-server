@@ -58,6 +58,15 @@ export class Report extends Document {
 
   @Prop({ default: Date.now })
   createdAt: Date;
+
+  @Prop()
+  name?: string;  // 性能指标名称，如 FCP, LCP 等
+
+  @Prop()
+  value?: number;  // 性能指标值
+
+  @Prop()
+  rating?: string;  // 性能评级：good, needs-improvement, poor
 }
 
 export const ReportSchema = SchemaFactory.createForClass(Report); 

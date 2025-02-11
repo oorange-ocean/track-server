@@ -10,6 +10,8 @@ import { ReportService } from './services/report.service';
 import { Report, ReportSchema } from './schemas/report.schema';
 import { ErrorMonitorController } from './controllers/error-monitor.controller';
 import { ErrorMonitorService } from './services/error-monitor.service';
+import { PerformanceMonitorController } from './controllers/performance-monitor.controller';
+import { PerformanceMonitorService } from './services/performance-monitor.service';
 
 @Module({
   imports: [
@@ -18,7 +20,7 @@ import { ErrorMonitorService } from './services/error-monitor.service';
       { name: Report.name, schema: ReportSchema },
     ]),
   ],
-  controllers: [EventController, AppController, ReportController, ErrorMonitorController],
+  controllers: [EventController, AppController, ReportController, ErrorMonitorController, PerformanceMonitorController],
   providers: [
     {
       provide: 'REDIS_CLIENT',
@@ -35,6 +37,7 @@ import { ErrorMonitorService } from './services/error-monitor.service';
     AppService,
     ReportService,
     ErrorMonitorService,
+    PerformanceMonitorService,
   ],
 })
 export class AppModule {

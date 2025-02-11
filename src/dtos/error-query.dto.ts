@@ -5,14 +5,14 @@ export class ErrorListQueryDto {
   @IsNumber()
   @Transform(({ value }) => {
     const num = Number(value);
-    return num > 1e10 ? Math.floor(num / 1000) : num;
+    return num > 1e12 ? Math.floor(num / 1000) : num;
   })
   startTime: number;
 
   @IsNumber()
   @Transform(({ value }) => {
     const num = Number(value);
-    return num > 1e10 ? Math.floor(num / 1000) : num;
+    return num > 1e12 ? Math.floor(num / 1000) : num;
   })
   endTime: number;
 
@@ -52,14 +52,14 @@ export class ErrorStatsQueryDto {
   @IsNumber()
   @Transform(({ value }) => {
     const num = Number(value);
-    return num > 1e10 ? Math.floor(num / 1000) : num;
+    return num > 1e12 ? Math.floor(num / 1000) : num;
   })
   startTime: number;
 
   @IsNumber()
   @Transform(({ value }) => {
     const num = Number(value);
-    return num > 1e10 ? Math.floor(num / 1000) : num;
+    return num > 1e12 ? Math.floor(num / 1000) : num;
   })
   endTime: number;
 

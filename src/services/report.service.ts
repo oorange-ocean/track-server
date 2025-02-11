@@ -19,7 +19,7 @@ export class ReportService {
     try {
       const report = new this.reportModel(data);
       await report.save();
-      return { code: 200, message: '错误上报成功' };
+      return { code: 0, message: '错误上报成功' };
     } catch (error) {
       this.logger.error('保存错误数据失败', error);
       throw error;
@@ -28,9 +28,43 @@ export class ReportService {
 
   async handlePerformanceReport(data: PerformanceReportDto) {
     try {
-      const report = new this.reportModel(data);
-      await report.save();
-      return { code: 200, message: '性能数据上报成功' };
+      this.logger.debug('收到性能数据:', {
+        time: data.time,
+        type: data.type,
+        name: data.name,
+        rating: data.rating,
+        value: data.value,
+        fullData: JSON.stringify(data, null, 2)
+      });
+      
+      // 将性能指标数据拆分为多条记录保存
+      if (data.metrics && Array.isArray(data.metrics)) {
+        const reports = data.metrics.map(metric => {
+          return new this.reportModel({
+            ...data,
+            type: 'performance',
+            name: metric.name,
+            value: metric.value,
+            rating: metric.rating
+          });
+        });
+        
+        await Promise.all(reports.map(report => report.save()));
+        this.logger.debug(`保存了 ${reports.length} 条性能指标数据`);
+      } else {
+        // 处理单条性能指标数据
+        const report = new this.reportModel({
+          ...data,
+          type: 'performance',
+          name: data.name,
+          value: data.value,
+          rating: data.rating
+        });
+        await report.save();
+        this.logger.debug('保存了1条性能指标数据');
+      }
+      
+      return { code: 0, message: '性能数据上报成功' };
     } catch (error) {
       this.logger.error('保存性能数据失败', error);
       throw error;
@@ -41,7 +75,7 @@ export class ReportService {
     try {
       const report = new this.reportModel(data);
       await report.save();
-      return { code: 200, message: '录屏数据上报成功' };
+      return { code: 0, message: '录屏数据上报成功' };
     } catch (error) {
       this.logger.error('保存录屏数据失败', error);
       throw error;
@@ -52,7 +86,7 @@ export class ReportService {
     try {
       const report = new this.reportModel(data);
       await report.save();
-      return { code: 200, message: '白屏检测数据上报成功' };
+      return { code: 0, message: '白屏检测数据上报成功' };
     } catch (error) {
       this.logger.error('保存白屏检测数据失败', error);
       throw error;
