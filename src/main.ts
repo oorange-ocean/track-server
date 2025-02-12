@@ -5,6 +5,7 @@ import { ValidationPipe } from '@nestjs/common';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import * as express from 'express';
+import * as bodyParser from 'body-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -51,6 +52,10 @@ async function bootstrap() {
     Logger.log(`${req.method} ${req.url}`, 'Request');
     next();
   });
+
+  // 配置 raw body 解析
+  app.use(bodyParser.raw({ type: 'text/plain', limit: '5mb' }));
+  app.use(bodyParser.json({ limit: '5mb' }));
 
   await app.listen(process.env.PORT || 3000);
 }
