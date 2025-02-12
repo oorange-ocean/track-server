@@ -7,6 +7,7 @@ import { PerformanceReportDto } from '../dtos/performance-report.dto';
 import { RecordScreenDto } from '../dtos/record-screen.dto';
 import { WhiteScreenDto } from '../dtos/white-screen.dto';
 import { ResourceErrorDto } from '../dtos/resource-error.dto';
+import { HttpErrorDto } from '../dtos/http-error.dto';
 
 @Injectable()
 export class ReportService {
@@ -101,6 +102,17 @@ export class ReportService {
       return { code: 0, message: '资源错误上报成功' };
     } catch (error) {
       this.logger.error('保存资源错误数据失败', error);
+      throw error;
+    }
+  }
+
+  async handleHttpError(data: HttpErrorDto) {
+    try {
+      const report = new this.reportModel(data);
+      await report.save();
+      return { code: 0, message: '接口请求错误上报成功' };
+    } catch (error) {
+      this.logger.error('保存接口请求错误数据失败', error);
       throw error;
     }
   }

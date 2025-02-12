@@ -5,6 +5,7 @@ import { PerformanceReportDto } from '../dtos/performance-report.dto';
 import { RecordScreenDto } from '../dtos/record-screen.dto';
 import { WhiteScreenDto } from '../dtos/white-screen.dto';
 import { ResourceErrorDto } from '../dtos/resource-error.dto';
+import { HttpErrorDto } from '../dtos/http-error.dto';
 import { Request } from 'express';
 
 @Controller('reportData')
@@ -39,6 +40,9 @@ export class ReportController {
           return await this.reportService.handleWhiteScreen(data as WhiteScreenDto);
         case 'resource':
           return await this.reportService.handleResourceError(data as ResourceErrorDto);
+        case 'xhr':
+        case 'fetch':
+          return await this.reportService.handleHttpError(data as HttpErrorDto);
         default:
           return {
             code: 400,
