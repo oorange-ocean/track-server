@@ -174,3 +174,167 @@ crontab -e
 # 添加以下行（每天凌晨2点备份）
 0 2 * * * /root/backup-mongo.sh
 ```
+公共字段
+
+所有上报的数据都包含以下公共字段:
+
+{
+  type: string;        // 事件类型
+  pageUrl: string;     // 页面地址
+  time: number;        // 发生时间戳
+  uuid: string;        // 页面唯一标识
+  apikey: string;      // 项目id 
+  status: string;      // 事件状态 'error' | 'ok'
+  sdkVersion: string;  // SDK版本号
+  breadcrumb?: BreadcrumbData[]; // 用户行为栈
+  deviceInfo: {        // 设备信息
+    browserVersion: string | number;  // 浏览器版本
+    browser: string;                  // 浏览器名称
+    osVersion: string | number;       // 系统版本
+    os: string;                       // 操作系统
+    ua: string;                       // UA信息
+    device: string;                   // 设备描述
+    device_type: string;              // 设备类型(pc/mobile)
+  }
+}
+
+错误上报
+
+1. 代码错误
+{
+  type: 'error',
+  message: string;      // 错误信息
+  fileName: string;     // 报错文件
+  line: number;         // 行号
+  column: number;       // 列号
+}
+
+2. 资源加载错误
+{
+  type: 'resource',
+  time: number;         // 发生时间
+  message: string;      // 加载失败信息
+  name: string;         // 资源类型(js/css等)
+}
+
+3. 接口请求错误
+{
+  type: 'xhr' | 'fetch',      // 请求类型
+  url: string,                // 请求URL
+  elapsedTime: number,        // 请求耗时(ms)
+  message: string,            // 错误信息,如 "请求失败，Status值为:404，not_found"
+  
+  // 请求数据
+  requestData: {
+    httpType: 'xhr' | 'fetch',// 请求方式
+    method: string,           // HTTP方法(GET/POST等)
+    data: any                 // 请求参数
+  },
+  
+  // 响应数据  
+  response: {
+    Status: number,           // HTTP状态码
+    data: any                 // 响应数据
+  }
+}
+
+性能数据
+{
+  type: 'performance',
+  name: string,           // 指标名称
+  value: number,          // 指标值
+  rating: string,         // 评级(good/poor)
+}
+
+具体指标包括:
+1. FCP (First Contentful Paint)
+{
+  name: 'FCP',           // 首次内容绘制
+  value: number,         // 数值(ms)
+  rating: 'good' | 'poor' // value > 2500ms 为 poor
+}
+
+2. LCP (Largest Contentful Paint)
+{
+  name: 'LCP',           // 最大内容绘制
+  value: number,         // 数值(ms)
+  rating: 'good' | 'poor' // value > 4000ms 为 poor
+}
+
+3. TTFB (Time to First Byte)
+{
+  name: 'TTFB',          // 首字节时间
+  value: number,         // 数值(ms)
+  rating: 'good' | 'poor' // value > 100ms 为 poor
+}
+
+4. FID (First Input Delay)
+{
+  name: 'FID',           // 首次输入延迟
+  value: number,         // 数值(ms)
+  rating: 'good' | 'poor' // value > 100ms 为 poor
+}
+
+5. CLS (Cumulative Layout Shift)
+{
+  name: 'CLS',           // 累积布局偏移
+  value: number,         // 数值(无单位)
+  rating: 'good' | 'poor' // value > 0.1 为 poor
+}
+
+个性化指标
+
+1. Long Task (长任务)
+{
+  type: 'performance',
+  name: 'longTask',
+  longTask: {
+    name: string,         // 任务名称
+    duration: number,     // 任务持续时间
+    startTime: number,    // 开始时间
+    entryType: string     // 条目类型
+  }
+}
+
+2. Memory (内存)
+{
+  type: 'performance', 
+  name: 'memory',
+  memory: {
+    jsHeapSizeLimit: number,  // JS堆内存大小限制
+    totalJSHeapSize: number,  // 可使用的内存
+    usedJSHeapSize: number    // 已使用的内存
+  }
+}
+
+3. 首屏加载时间
+{
+  type: 'performance',
+  name: 'FSP',            // First Screen Paint
+  value: number,          // 数值(ms)
+  rating: 'good' | 'poor' // value > 2500ms 为 poor
+}
+
+4. 资源列表
+{
+  type: 'performance',
+  name: 'resourceList',           // 固定值
+  time: number,                   // 时间戳
+  status: 'ok',                   // 状态
+  resourceList: Array<{          // 资源列表数组
+    name: string,                // 资源名称/地址
+    initiatorType: string,       // 资源类型(img/script/link等)
+    startTime: number,           // 开始时间
+    responseEnd: number,         // 响应结束时间
+    duration: number,            // 加载耗时
+    transferSize: number,        // 传输大小
+    protocol: string,            // 协议(http/https)
+    status: number              // HTTP状态码
+  }>
+}
+白屏检测
+{
+   type:'whiteScreen',
+   time:number,                   //时间戳
+   status: 'error' | 'ok'         //是否白屏：'error'是白屏 | 'ok'不是白屏
+}

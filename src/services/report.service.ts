@@ -6,6 +6,7 @@ import { ErrorReportDto } from '../dtos/error-report.dto';
 import { PerformanceReportDto } from '../dtos/performance-report.dto';
 import { RecordScreenDto } from '../dtos/record-screen.dto';
 import { WhiteScreenDto } from '../dtos/white-screen.dto';
+import { ResourceErrorDto } from '../dtos/resource-error.dto';
 
 @Injectable()
 export class ReportService {
@@ -89,6 +90,17 @@ export class ReportService {
       return { code: 0, message: '白屏检测数据上报成功' };
     } catch (error) {
       this.logger.error('保存白屏检测数据失败', error);
+      throw error;
+    }
+  }
+
+  async handleResourceError(data: ResourceErrorDto) {
+    try {
+      const report = new this.reportModel(data);
+      await report.save();
+      return { code: 0, message: '资源错误上报成功' };
+    } catch (error) {
+      this.logger.error('保存资源错误数据失败', error);
       throw error;
     }
   }
